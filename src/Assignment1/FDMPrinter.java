@@ -1,13 +1,28 @@
 package Assignment1;
 
-public class FDMPrinter {
-    public void print(String s) throws InterruptedException {
-        System.out.println("Producing " +s+  " on FDM Printer");
+import java.util.concurrent.locks.ReentrantLock;
 
+public class FDMPrinter {
+
+    private ReentrantLock lock;
+
+    public FDMPrinter(){
+        lock=new ReentrantLock();
+    }
+    public void print(String s){
         try{
-            Thread.sleep(1000);
-        }catch(InterruptedException e){
-            e.getMessage();
+            lock.lock();
+
+            System.out.println("Producing " +s+  " on FDM Printer");
+
+            try{
+                Thread.sleep(1000);
+            }catch(InterruptedException e){
+                e.getMessage();
+            }
+        }finally{
+            lock.unlock();
         }
+
     }
 }

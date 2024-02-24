@@ -1,13 +1,26 @@
 package Assignment1;
 
-public class ResinPrinter {
-    public void print(String s){
-        System.out.println("Printing " +s+  " on Resin Printer");
+import java.util.concurrent.locks.ReentrantLock;
 
+public class ResinPrinter {
+    private ReentrantLock lock;
+
+    public ResinPrinter(){
+        lock=new ReentrantLock();
+    }
+    public void print(String s){
         try{
-            Thread.sleep(1000);
-        }catch(InterruptedException e){
-            e.getMessage();
+            lock.lock();
+            System.out.println("Printing " +s+  " on Resin Printer");
+
+            try{
+                Thread.sleep(1000);
+            }catch(InterruptedException e){
+                e.getMessage();
+            }
+        }finally{
+            lock.unlock();
         }
+
     }
 }
