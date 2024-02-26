@@ -11,7 +11,7 @@ public class Lathe {
     public void lathe(String s){
         try{
             lock.lock();
-            System.out.println("Using the Lathe to "+s);
+            //System.out.println("Using the Lathe to "+s);
 
             try{
                 Thread.sleep(1000);

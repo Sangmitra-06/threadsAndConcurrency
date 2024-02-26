@@ -12,7 +12,7 @@ public class SolderingIron {
         try{
             lock.lock();
 
-            System.out.println("Using the soldering iron to "+s);
+            //System.out.println("Using the soldering iron to "+s);
             try{
                 Thread.sleep(1000);
             }catch(InterruptedException e){

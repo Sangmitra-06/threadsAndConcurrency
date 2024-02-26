@@ -13,7 +13,7 @@ public class FDMPrinter {
         try{
             lock.lock();
 
-            System.out.println("Producing " +s+  " on FDM Printer");
+            //System.out.println("Producing " +s+  " on FDM Printer");
 
             try{
                 Thread.sleep(1000);

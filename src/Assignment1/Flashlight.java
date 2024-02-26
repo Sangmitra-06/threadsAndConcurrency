@@ -2,39 +2,40 @@ package Assignment1;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ToasterPastry implements Runnable{
-    private ToasterOven toasterOven;
+public class Flashlight implements Runnable{
+    private Lathe lathe;
+    private SolderingIron iron;
     private int number;
     private int progressInterval;
 
     private MakerSpace makerSpace;
     private ReentrantLock lock;
 
-    public ToasterPastry(ToasterOven toast, int n, int p,MakerSpace m){
-        toasterOven=toast;
+    public Flashlight(Lathe l, SolderingIron s, int n, int p,MakerSpace m){
+        lathe=l;
+        iron=s;
         number=n;
         progressInterval=p;
 
         makerSpace=m;
         lock=new ReentrantLock();
-
     }
-
     @Override
     public void run() {
-        produceToasterPastry();
-    }
+        produceFlashlights();
 
-    public int produceToasterPastry(){
+    }
+    public int produceFlashlights(){
         int produced=0;
         for(int i=0;i<number;i++){
-            toasterOven.toast("toast a pastry");
+            lathe.lathe("hollow the stock");
+            iron.solder("connect some batteries, an LED, and a switch");
             produced++;
             if((i+1)%progressInterval==0){
-                System.out.println("Toasted "+(i+1)+" pastries");
+                System.out.println("Created "+(i+1)+" flashlights");
             }
         }
-        System.out.println(produced+" Pastries produced");
+        System.out.println(produced+" Flashlights produced");
         lock.lock();
         makerSpace.totalProduced+=produced;
         lock.unlock();

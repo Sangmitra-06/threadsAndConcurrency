@@ -11,7 +11,7 @@ public class ResinPrinter {
     public void print(String s){
         try{
             lock.lock();
-            System.out.println("Printing " +s+  " on Resin Printer");
+            //System.out.println("Printing " +s+  " on Resin Printer");
 
             try{
                 Thread.sleep(1000);

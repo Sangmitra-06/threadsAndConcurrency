@@ -12,7 +12,7 @@ public class Airbrush {
     public void brush(String s){
         try{
             lock.lock();
-            System.out.println("Using the airbrush to "+s);
+            //System.out.println("Using the airbrush to "+s);
 
             try{
                 Thread.sleep(1000);

@@ -11,7 +11,7 @@ public class Mill {
     public void mill(String s){
         try{
             lock.lock();
-            System.out.println("Using the mill to "+s);
+            //System.out.println("Using the mill to "+s);
 
             try{
                 Thread.sleep(1000);

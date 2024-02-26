@@ -2,39 +2,40 @@ package Assignment1;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ToasterPastry implements Runnable{
+public class SAKScales implements Runnable{
+    private Mill mill;
     private ToasterOven toasterOven;
     private int number;
     private int progressInterval;
 
     private MakerSpace makerSpace;
     private ReentrantLock lock;
-
-    public ToasterPastry(ToasterOven toast, int n, int p,MakerSpace m){
-        toasterOven=toast;
-        number=n;
+    public SAKScales(Mill m, ToasterOven t, int no, int p,MakerSpace ms){
+        mill=m;
+        toasterOven=t;
+        number=no;
         progressInterval=p;
 
-        makerSpace=m;
+        makerSpace=ms;
         lock=new ReentrantLock();
-
     }
 
     @Override
     public void run() {
-        produceToasterPastry();
-    }
+        produceSAKScales();
 
-    public int produceToasterPastry(){
+    }
+    public int produceSAKScales(){
         int produced=0;
         for(int i=0;i<number;i++){
-            toasterOven.toast("toast a pastry");
+            mill.mill("Carve out scales");
+            toasterOven.toast("Dry completely");
             produced++;
             if((i+1)%progressInterval==0){
-                System.out.println("Toasted "+(i+1)+" pastries");
+                System.out.println("Created "+(i+1)+" SAK scales");
             }
         }
-        System.out.println(produced+" Pastries produced");
+        System.out.println(produced+" SAK Scales produced");
         lock.lock();
         makerSpace.totalProduced+=produced;
         lock.unlock();
