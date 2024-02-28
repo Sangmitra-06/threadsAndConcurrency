@@ -9,14 +9,16 @@ public class ToasterPastry implements Runnable{
 
     private MakerSpace makerSpace;
     private ReentrantLock lock;
+    private ReentrantLock output;
+    private volatile int produced=0;
 
-    public ToasterPastry(ToasterOven toast, int n, int p,MakerSpace m){
+    public ToasterPastry(ToasterOven toast, int n,MakerSpace m){
         toasterOven=toast;
         number=n;
-        progressInterval=p;
 
         makerSpace=m;
         lock=new ReentrantLock();
+        output=m.output;
 
     }
 
@@ -26,18 +28,33 @@ public class ToasterPastry implements Runnable{
     }
 
     public int produceToasterPastry(){
-        int produced=0;
-        for(int i=0;i<number;i++){
+        for(int i=0;i<number;i++) {
             toasterOven.toast("toast a pastry");
-            produced++;
-            if((i+1)%progressInterval==0){
-                System.out.println("Toasted "+(i+1)+" pastries");
-            }
+
+                produced++;
+                output.lock();
+                try {
+                    makerSpace.producedSoFar++;
+                    if ((makerSpace.producedSoFar) % makerSpace.freReport == 0) {
+                        System.out.println("Made " + makerSpace.producedSoFar + " knickknacks");
+                        System.out.println("----------------------------------------");
+                    }
+                } finally {
+                    output.unlock();
+                }
+
         }
-        System.out.println(produced+" Pastries produced");
-        lock.lock();
-        makerSpace.totalProduced+=produced;
-        lock.unlock();
+
+        makerSpace.lock.lock();
+        try{
+            System.out.println(produced+" Pastries produced");
+            System.out.println("----------------------------------------");
+            makerSpace.totalProduced+=produced;
+        }finally{
+
+            makerSpace.lock.unlock();
+        }
+
         return produced;
     }
 }

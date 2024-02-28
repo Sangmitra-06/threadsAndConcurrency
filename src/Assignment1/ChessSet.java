@@ -7,19 +7,20 @@ public class ChessSet implements Runnable{
     private Lathe lathe;
     private FDMPrinter fdm;
     private int number;
-    private int progressInterval;
     private MakerSpace makerSpace;
     private ReentrantLock lock;
+    private ReentrantLock output;
+    private volatile int produced=0;
 
-    public ChessSet(int no, int progress, ResinPrinter r, Lathe l, FDMPrinter f, MakerSpace m){
+    public ChessSet(int no, ResinPrinter r, Lathe l, FDMPrinter f, MakerSpace m){
         number=no;
-        progressInterval=progress;
         resin=r;
         lathe=l;
         fdm=f;
 
         makerSpace=m;
         lock=new ReentrantLock();
+        output=m.output;
     }
     @Override
     public void run() {
@@ -27,7 +28,6 @@ public class ChessSet implements Runnable{
 
     }
     public int produceChessSet(){
-        int produced=0;
         for(int i=0;i<number;i++){
 
             resin.print("white pieces");
@@ -36,14 +36,27 @@ public class ChessSet implements Runnable{
             lathe.lathe("turn the black hooks");
             fdm.print("the board");
             produced++;
-            if((i+1)%progressInterval==0){
-                System.out.println("Made "+(i+1)+" chess sets");
+            output.lock();
+            try{
+                makerSpace.producedSoFar++;
+                if((makerSpace.producedSoFar)% makerSpace.freReport==0){
+                    System.out.println("Made "+makerSpace.producedSoFar+" knickknacks");
+                    System.out.println("----------------------------------------");}
+            }finally{
+                output.unlock();
             }
         }
-        System.out.println(produced+" Chess sets produced");
-        lock.lock();
-        makerSpace.totalProduced+=produced;
-        lock.unlock();
+
+        makerSpace.lock.lock();
+        try{
+            System.out.println(produced+" Chess sets produced");
+            System.out.println("----------------------------------------");
+            makerSpace.totalProduced+=produced;
+        }finally{
+
+            makerSpace.lock.unlock();
+        }
+
         return produced;
     }
 }

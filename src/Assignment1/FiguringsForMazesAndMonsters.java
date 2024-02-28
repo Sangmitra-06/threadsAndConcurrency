@@ -7,17 +7,19 @@ public class FiguringsForMazesAndMonsters implements Runnable{
     private ResinPrinter resin;
     private Airbrush airbrush;
     private int number;
-    private int progressInterval;
 
     private MakerSpace makerSpace;
     private ReentrantLock lock;
-    public FiguringsForMazesAndMonsters(int no,int progress, ResinPrinter resin_print, Airbrush a,MakerSpace m){
+    private ReentrantLock output;
+
+    private volatile int produced=0;
+    public FiguringsForMazesAndMonsters(int no, ResinPrinter resin_print, Airbrush a,MakerSpace m){
         number=no;
-        progressInterval=progress;
         resin=resin_print;
         airbrush=a;
         makerSpace=m;
         lock=new ReentrantLock();
+        output=m.output;
     }
 
     @Override
@@ -25,21 +27,32 @@ public class FiguringsForMazesAndMonsters implements Runnable{
         produceFigurines();
     }
     public int produceFigurines(){
-        int produced=0;
+
         for(int i=0;i<number;i++){
             resin.print("figurine");
             airbrush.brush("paint figurine");
             produced++;
-            if((i+1)%progressInterval==0){
-                System.out.println("Made "+(i+1)+" figurines");
+            output.lock();
+            try{
+                makerSpace.producedSoFar++;
+                if((makerSpace.producedSoFar)% makerSpace.freReport==0){
+                  System.out.println("Made "+makerSpace.producedSoFar+" knickknacks");
+                  System.out.println("----------------------------------------");}
+            }finally{
+                output.unlock();
             }
 
-
         }
-        System.out.println(produced+" Figurines produced");
-        lock.lock();
-        makerSpace.totalProduced+=produced;
-        lock.unlock();
+        makerSpace.lock.lock();
+        try{
+            System.out.println(produced+" Figurines produced");
+            System.out.println("----------------------------------------");
+            makerSpace.totalProduced+=produced;
+        }finally{
+            makerSpace.lock.unlock();
+        }
+
+
         return produced;
     }
 }

@@ -10,14 +10,16 @@ public class SAKScales implements Runnable{
 
     private MakerSpace makerSpace;
     private ReentrantLock lock;
-    public SAKScales(Mill m, ToasterOven t, int no, int p,MakerSpace ms){
+    private ReentrantLock output;
+    private volatile int produced=0;
+    public SAKScales(Mill m, ToasterOven t, int no,MakerSpace ms){
         mill=m;
         toasterOven=t;
         number=no;
-        progressInterval=p;
 
         makerSpace=ms;
         lock=new ReentrantLock();
+        output=ms.output;
     }
 
     @Override
@@ -26,19 +28,29 @@ public class SAKScales implements Runnable{
 
     }
     public int produceSAKScales(){
-        int produced=0;
         for(int i=0;i<number;i++){
             mill.mill("Carve out scales");
             toasterOven.toast("Dry completely");
             produced++;
-            if((i+1)%progressInterval==0){
-                System.out.println("Created "+(i+1)+" SAK scales");
+            output.lock();
+            try{
+                makerSpace.producedSoFar++;
+                if((makerSpace.producedSoFar)% makerSpace.freReport==0){
+                    System.out.println("Made "+makerSpace.producedSoFar+" knickknacks");
+                    System.out.println("----------------------------------------");}
+            }finally{
+                output.unlock();
             }
         }
-        System.out.println(produced+" SAK Scales produced");
-        lock.lock();
-        makerSpace.totalProduced+=produced;
-        lock.unlock();
+        makerSpace.lock.lock();
+        try{
+            System.out.println(produced+" SAK Scales produced");
+            System.out.println("----------------------------------------");
+            makerSpace.totalProduced+=produced;
+        }finally{
+            makerSpace.lock.unlock();
+        }
+
         return produced;
     }
 }
