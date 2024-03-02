@@ -53,19 +53,19 @@ public class ToasterPastry implements Runnable{
 
             // the order of usage to produce the toaster pastries
             toasterOven.toast();
-                produced++;
-                output.lock(); // locking the output to prevent errors in production
-                try {
-                    // updating the total number of knickknacks produced so far
-                    makerSpace.producedSoFar++;
-                    if ((makerSpace.producedSoFar) % makerSpace.freReport == 0) {
-                        System.out.println("Made " + makerSpace.producedSoFar + " knickknacks");
-                        System.out.println("----------------------------------------");
-                    }
-                } finally {
-                    // releasing the lock
-                    output.unlock();
+            produced++;
+            output.lock(); // locking the output to prevent errors in production
+            try {
+                // updating the total number of knickknacks produced so far
+                makerSpace.producedSoFar++;
+                if ((makerSpace.producedSoFar) % makerSpace.freReport == 0) {
+                    System.out.println("Made " + makerSpace.producedSoFar + " knickknacks");
+                    System.out.println("----------------------------------------");
                 }
+            } finally {
+                // releasing the lock
+                output.unlock();
+            }
 
         }
         // locking the makerspace lock to update on the completion of the production of toaster pastries

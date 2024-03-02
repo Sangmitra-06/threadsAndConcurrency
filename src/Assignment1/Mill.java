@@ -1,6 +1,6 @@
 package Assignment1;
 /**
- * This class is an implementation of the Mill resource. This resource contains its own lock to allow only one user to access it at a given time, thus ensuring proper concurrency and lack of deadlocks.
+ * This class is an implementation of the Mill resource. This resource contains its own lock to allow only one thread to access it at a given time, thus ensuring proper concurrency and lack of deadlocks.
  *
  * @author     Sangmitra Madhusudan
  * @course     COSC 2P13
