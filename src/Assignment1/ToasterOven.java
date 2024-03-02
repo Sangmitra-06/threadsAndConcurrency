@@ -1,5 +1,14 @@
 package Assignment1;
-
+/**
+ * This class is an implementation of the Toaster Over resource. This resource contains its own lock to allow only one user to access it at a given time, thus ensuring proper concurrency and lack of deadlocks.
+ *
+ * @author     Sangmitra Madhusudan
+ * @course     COSC 2P13
+ * @assignment #1
+ * @student Id 7115900
+ * @version    1.0
+ * @since      February 24th, 2024
+ */
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ToasterOven {
@@ -8,18 +17,24 @@ public class ToasterOven {
     public ToasterOven(){
         lock=new ReentrantLock();
     }
-    public void toast(String s){
+
+    /* Function that locks the resource and simulates an action occurring
+     *
+     */
+    public void toast(){
         try{
+            // locking the resource
             lock.lock();
-            //System.out.println("Using the toaster oven to " +s);
             try{
-                Thread.sleep(1000);
+                // just simulating some action occurring
+                Thread.sleep(0);
             }catch(InterruptedException e){
                 e.getMessage();
             }
         }finally{
+            // unlocking the resource
             lock.unlock();
         }
 
-    }
+    } // toast
 }

@@ -1,5 +1,14 @@
 package Assignment1;
-
+/**
+ * This class is an implementation of the FDM Printer resource. This resource contains its own lock to allow only one user to access it at a given time, thus ensuring proper concurrency and lack of deadlocks.
+ *
+ * @author     Sangmitra Madhusudan
+ * @course     COSC 2P13
+ * @assignment #1
+ * @student Id 7115900
+ * @version    1.0
+ * @since      February 24th, 2024
+ */
 import java.util.concurrent.locks.ReentrantLock;
 
 public class FDMPrinter {
@@ -9,20 +18,24 @@ public class FDMPrinter {
     public FDMPrinter(){
         lock=new ReentrantLock();
     }
-    public void print(String s){
+
+    /* Function that locks the resource and simulates an action occurring
+     *
+     */
+    public void print(){
         try{
+            // locking the resource
             lock.lock();
-
-            //System.out.println("Producing " +s+  " on FDM Printer");
-
             try{
+                // just simulating some action occurring
                 Thread.sleep(1000);
             }catch(InterruptedException e){
                 e.getMessage();
             }
         }finally{
+            // unlocking the resource
             lock.unlock();
         }
 
-    }
+    } // print
 }

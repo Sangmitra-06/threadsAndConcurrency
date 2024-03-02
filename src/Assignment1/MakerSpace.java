@@ -1,28 +1,43 @@
 package Assignment1;
 
+/**
+ * This class is the implementation of the makerspace. It creates the knickknacks based on the requirements specified by the user.
+ *
+ * @author     Sangmitra Madhusudan
+ * @course     COSC 2P13
+ * @assignment #1
+ * @student Id 7115900
+ * @version    1.0
+ * @since      February 24th, 2024
+ */
 import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantLock;
-
 public class MakerSpace {
-    private static ResinPrinter resinPrinter=new ResinPrinter();
-    private static Airbrush airbrush=new Airbrush();
-    private static SolderingIron solderingIron=new SolderingIron();
-    private static FDMPrinter fdmPrinter=new FDMPrinter();
-    private static ToasterOven toasterOven=new ToasterOven();
-    private static Mill mill=new Mill();
-    private static Lathe lathe=new Lathe();
+    private ResinPrinter resinPrinter=new ResinPrinter();
+    private Airbrush airbrush=new Airbrush();
+    private SolderingIron solderingIron=new SolderingIron();
+    private FDMPrinter fdmPrinter=new FDMPrinter();
+    private ToasterOven toasterOven=new ToasterOven();
+    private Mill mill=new Mill();
+    private Lathe lathe=new Lathe();
+    // the lock that controls the output of each knickknack's completion
     public ReentrantLock lock=new ReentrantLock();
-    public volatile int  totalProduced=0;
+    // the variable keeping track of the total number of knickknacks produced
+    public volatile int totalProduced=0;
+    // the lock that controls the output of the progress for knickknack production as per the users request
     public ReentrantLock output;
     private Scanner scanner;
+    // the number of each type of knickknacks to produce
     private int numFig, numChess, numFlash, numPastry, numMC, numScales, numCup;
+    // the frequency of reporting each knickknack
     public int freReport;
+    // the number of knickknacks produced after the production of each knickknack ( used for progress reporting )
     public volatile int producedSoFar;
 
     public MakerSpace(){
         output=new ReentrantLock();
         menu();
-        // Create instances of knickknack makers
+        // Creating instances of knickknack's
         FiguringsForMazesAndMonsters figurineMaker = new FiguringsForMazesAndMonsters(numFig, resinPrinter, airbrush,this);
         MotorControllers motorControllerMaker = new MotorControllers(numMC, solderingIron, mill, toasterOven, this);
         ChessSet chessSetMaker = new ChessSet(numChess,resinPrinter, lathe, fdmPrinter,this);
@@ -31,7 +46,7 @@ public class MakerSpace {
         CupHolder cupHolder=new CupHolder(toasterOven,fdmPrinter,airbrush,numCup,this);
         ToasterPastry pastry=new ToasterPastry(toasterOven,numPastry,this);
 
-        // Create and start threads for each knickknack maker
+        // Creating and starting threads for each knickknack
 
         Thread figurineThread = new Thread(figurineMaker);
         Thread motorControllerThread = new Thread(motorControllerMaker);
@@ -64,9 +79,8 @@ public class MakerSpace {
             pastryThread.start();
         }
 
-
         try {
-            // Wait for all threads to complete
+            // Waiting for all threads to complete
             if(numFig>0){
                 figurineThread.join();
             }
@@ -89,7 +103,6 @@ public class MakerSpace {
                 pastryThread.join();
             }
 
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,6 +113,8 @@ public class MakerSpace {
         System.out.println("----------------------------------------");
     }
 
+    /* The menu that the user interacts with
+     */
     private void menu(){
         scanner=new Scanner(System.in);
         System.out.println("Welcome to the MakerSpace");
